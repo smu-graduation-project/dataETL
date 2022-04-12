@@ -35,7 +35,7 @@ public class HttpConnection {
         }
         stringBuilder.append("]");
 
-        System.out.println(stringBuilder.toString());
+        // System.out.println(stringBuilder.toString());
 
         byte[] input = stringBuilder.toString().getBytes("utf-8");
         outputStream.write(input, 0, input.length);
