@@ -11,8 +11,9 @@ public class JDBCController {
     private Connection conn;
 
     private double temperature;
-    private double voltage;
-    private double electricCurrent;
+    private double humidity;
+//    private double voltage;
+//    private double electricCurrent;
 
     private int index;
 
@@ -43,7 +44,7 @@ public class JDBCController {
 
             while(rs.next()) {
                 //mote와 port를 조합하여, nodeId를 만들면 될 듯 -> 둘다 bigint Type
-                Long nodeId = Long.valueOf(rs.getString("port"));
+                Long nodePort = Long.valueOf(rs.getString("port"));
 
                 LocalDateTime localDateTime = LocalDateTime.parse(rs.getString("time").replace(' ', 'T'));
                 Long sequence = Long.valueOf(rs.getString("seqNo"));
@@ -51,7 +52,8 @@ public class JDBCController {
                 String stringData = rs.getString("data");
                 transformStringData(stringData);
 
-                dataList.add(new Data(nodeId, localDateTime, sequence, temperature, voltage, electricCurrent));
+//                dataList.add(new Data(nodePort, localDateTime, sequence, temperature, voltage, electricCurrent));
+                dataList.add(new Data(nodePort, localDateTime, sequence, temperature, humidity));
                 lastId = Long.valueOf(rs.getString("id"));
             }
             stmt.close();
@@ -65,8 +67,8 @@ public class JDBCController {
     private void transformStringData(String stringData) throws SQLException {
         index = 0;
         temperature = makeStringDataToDouble(stringData);
-        voltage = makeStringDataToDouble(stringData);
-        electricCurrent = makeStringDataToDouble(stringData);
+        humidity = makeStringDataToDouble(stringData);
+//        electricCurrent = makeStringDataToDouble(stringData);
     }
 
     private double makeStringDataToDouble(String stringData) {

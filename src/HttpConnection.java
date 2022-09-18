@@ -4,6 +4,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class HttpConnection {
@@ -31,18 +32,18 @@ public class HttpConnection {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("[");
         for (Data data : dataList) {
-            stringBuilder.append(data.toString() + ", ");
+            stringBuilder.append(data.toString()).append(", ");
         }
         stringBuilder.append("]");
 
         // System.out.println(stringBuilder.toString());
 
-        byte[] input = stringBuilder.toString().getBytes("utf-8");
+        byte[] input = stringBuilder.toString().getBytes(StandardCharsets.UTF_8);
         outputStream.write(input, 0, input.length);
     }
 
     private String getResponse(HttpURLConnection httpURLConnection) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream(), "utf-8"));
+        BufferedReader br = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream(), StandardCharsets.UTF_8));
         StringBuilder response = new StringBuilder();
         String responseLine;
 

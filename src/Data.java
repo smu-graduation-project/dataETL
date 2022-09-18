@@ -1,14 +1,13 @@
 import java.time.LocalDateTime;
 
 public class Data {
-    public Data(Long nodeId, LocalDateTime timeStamp, Long sequence, double temperature, double voltage, double electricCurrent) {
+    public Data(Long nodeId, LocalDateTime timeStamp, Long sequence, double temperature, double humidity) {
         this.nodeId = nodeId;
         this.timeStamp = timeStamp;
         this.sequence = sequence;
 
         this.temperature = temperature;
-        this.voltage = voltage;
-        this.electricCurrent = electricCurrent;
+        this.humidity = humidity;
     }
 
     private Long nodeId;
@@ -17,24 +16,17 @@ public class Data {
     private Long sequence;
 
     private double temperature;
-    private double voltage;
-    private double electricCurrent;
+    private double humidity;;
 
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
 
-        stringBuilder.append("{");
-        stringBuilder.append("node_id : " + nodeId + ", ");
-        stringBuilder.append("timeStamp : " + "\"" + timeStamp.toString() + "\"" + ", ");
-        stringBuilder.append("sequence : " + sequence + ", ");
-
-        stringBuilder.append("temperature : " + temperature + ", ");
-        stringBuilder.append("voltage : " + voltage + ", ");
-        stringBuilder.append("electricCurrent : " + electricCurrent);
-
-        stringBuilder.append("}");
-
-        return stringBuilder.toString();
+        return "{" +
+                "\"node_id\" : " + nodeId + ", " +
+                "\"timeStamp\" : " + "\"" + timeStamp.toString() + "\"" + ", " +
+                "\"sequence\" : " + sequence + ", " +
+                "\"temperature\" : " + temperature + ", " +
+                "\"voltage\" : " + humidity + ", " +
+                "}";
     }
 }

@@ -4,8 +4,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import static java.lang.Thread.sleep;
-
 public class Main {
     private static final String apiUrl = "https://jsonplaceholder.typicode.com/posts";
     private static final String dbUrl = "jdbc:mysql://localhost/loraDummyData?useUnicode=true&"
@@ -25,7 +23,8 @@ public class Main {
 
         while (true) {
             System.out.println(httpConnection.setConnection());
-            sleep(50);
+            // api로 데이터를 보내야 한다.
+            Thread.sleep(100);
         }
 
     }
