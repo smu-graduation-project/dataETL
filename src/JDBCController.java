@@ -5,21 +5,23 @@ import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class JDBCController {
     private Long lastId;
     private Connection conn;
 
     private double temperature;
-    private double humidity;
-//    private double voltage;
-//    private double electricCurrent;
-
-    private int index;
+    private double voltage;
+    private double electricCurrent;
 
     public JDBCController(Long lastId, Connection conn) {
         this.lastId = lastId;
         this.conn = conn;
+    }
+
+    public Long getLastId() {
+        return lastId;
     }
 
     public List<Data> loadDataList() {
@@ -27,7 +29,7 @@ public class JDBCController {
 
         try {
             Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM dummyData WHERE id > " + this.lastId + ";");
+            ResultSet rs = stmt.executeQuery("SELECT * FROM appdata WHERE id > " + this.lastId + " and port > 30;");
 
 //            +--------------+--------------------+------+-----+---------+----------------+
 //            | Field        | Type               | Null | Key | Default | Extra          |
@@ -53,10 +55,11 @@ public class JDBCController {
                 transformStringData(stringData);
 
 //                dataList.add(new Data(nodePort, localDateTime, sequence, temperature, voltage, electricCurrent));
-                dataList.add(new Data(nodePort, localDateTime, sequence, temperature, humidity));
+                dataList.add(new Data(nodePort, localDateTime, sequence, temperature, voltage, electricCurrent));
                 lastId = Long.valueOf(rs.getString("id"));
             }
             stmt.close();
+            conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -65,25 +68,21 @@ public class JDBCController {
     }
 
     private void transformStringData(String stringData) throws SQLException {
-        index = 0;
-        temperature = makeStringDataToDouble(stringData);
-        humidity = makeStringDataToDouble(stringData);
-//        electricCurrent = makeStringDataToDouble(stringData);
+        temperature = makeStringDataToDouble(stringData, 0);
+        voltage = makeStringDataToDouble(stringData, 10);
+        electricCurrent = temperature + voltage;
     }
 
-    private double makeStringDataToDouble(String stringData) {
+    private double makeStringDataToDouble(String stringData,int start) {
         double data = 0;
-        for (int i = index; i < stringData.length(); i ++) {
-            if (stringData.charAt(i) == '2') {
-                data += Integer.parseInt(String.valueOf(stringData.charAt(i+3))) * 0.1;
-                data += Integer.parseInt(String.valueOf(stringData.charAt(i+5))) * 0.01;
+        for (int i = start; i < stringData.length(); i ++) {
 
-                int temp = 0;
-                for (int j = i; j > index; j -= 2) {
-                    data += Integer.parseInt(String.valueOf(stringData.charAt(j - 1))) * Math.pow(10, temp);
-                    temp++;
-                }
-                index = i + 6;
+            if (stringData.charAt(i) == 'e') {
+                data += Integer.parseInt(String.valueOf(stringData.charAt(i-2)));
+                data += Integer.parseInt(String.valueOf(stringData.charAt(i-4))) * 10;
+                data += Integer.parseInt(String.valueOf(stringData.charAt(i+1))) * 0.1;
+                data += Integer.parseInt(String.valueOf(stringData.charAt(i+3))) * 0.01;
+
                 return data;
             }
         }
